@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: backend-ngenep
+    env: php
+    region: singapore
+    plan: free
+    buildCommand: "chmod +x render-build.sh && ./render-build.sh"
+    startCommand: "php artisan serve --host=0.0.0.0 --port=$PORT"
+    envVars:
+      - key: APP_NAME
+        value: "DesaNgenep"
+      - key: APP_ENV
+        value: "production"
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        value: "https://backend-ngenep.onrender.com"
+      - key: DB_CONNECTION
+        value: "mysql"
+      - key: DB_HOST
+        value: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com"
+      - key: DB_PORT
+        value: "4000"
+      - key: DB_DATABASE
+        value: "ngenep"
+      - key: DB_USERNAME
+        value: "4WCi35uyv44Gyf1.root"
+      - key: DB_PASSWORD
+        value: "wECgUwrK3L0MP6iM"
+      - key: MYSQL_ATTR_SSL_CA
+        value: ""
