@@ -45,7 +45,7 @@ class SettingController extends Controller
             'alamat'    => 'nullable|string|max:500',
             'telepon'   => 'nullable|string|max:50',
             'email'     => 'nullable|email|max:255',
-            'logo'      => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
+            'logo'      => request()->hasFile('logo') ? 'nullable|file|max:2048' : 'nullable|string',
             
             // Admin updates
             'username'  => 'nullable|string|max:255|unique:users,name,' . optional($request->user())->id,
@@ -54,7 +54,14 @@ class SettingController extends Controller
 
         // Process logo upload
         if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('settings', 'public');
+            $file = $request->file('logo');
+            $ext = strtolower($file->getClientOriginalExtension());
+            if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
+                return response()->json(['message' => 'Format file logo tidak diizinkan.'], 422);
+            }
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $ext;
+            $path = $file->storeAs('settings', $filename, 'public');
+            
             Setting::updateOrCreate(
                 ['key' => 'logo'],
                 ['value' => url('storage/' . $path)]

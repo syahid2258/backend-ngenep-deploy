@@ -19,7 +19,7 @@ class NewsController extends Controller
             'penulis'           => 'nullable|string|max:100',
             'judul'             => 'required|string|max:255',
             'deskripsi_singkat' => 'nullable|string|max:500',
-            'gambar'            => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+            'gambar'            => request()->hasFile('gambar') ? 'nullable|file|max:5120' : 'nullable|string',
             'konten'            => 'nullable|string',
         ];
     }
@@ -34,7 +34,13 @@ class NewsController extends Controller
         $validated = $request->validate($this->baseRules());
 
         if ($request->hasFile('gambar')) {
-            $path = $request->file('gambar')->store('news', 'public');
+            $file = $request->file('gambar');
+            $ext = strtolower($file->getClientOriginalExtension());
+            if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
+                return response()->json(['message' => 'Format file gambar tidak diizinkan.'], 422);
+            }
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $ext;
+            $path = $file->storeAs('news', $filename, 'public');
             $validated['gambar'] = url('storage/' . $path);
         }
 
@@ -55,7 +61,13 @@ class NewsController extends Controller
         $validated = $request->validate($this->baseRules());
 
         if ($request->hasFile('gambar')) {
-            $path = $request->file('gambar')->store('news', 'public');
+            $file = $request->file('gambar');
+            $ext = strtolower($file->getClientOriginalExtension());
+            if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
+                return response()->json(['message' => 'Format file gambar tidak diizinkan.'], 422);
+            }
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $ext;
+            $path = $file->storeAs('news', $filename, 'public');
             $validated['gambar'] = url('storage/' . $path);
         }
 

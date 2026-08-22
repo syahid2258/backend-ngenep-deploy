@@ -16,11 +16,18 @@ class BannerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'gambar' => 'required|image|max:2048' // multiple files can be uploaded one by one
+            'gambar' => 'required|file|max:5120' // multiple files can be uploaded one by one
         ]);
 
         if ($request->hasFile('gambar')) {
-            $path = $request->file('gambar')->store('banners', 'public');
+            $file = $request->file('gambar');
+            $ext = strtolower($file->getClientOriginalExtension());
+            if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
+                return response()->json(['message' => 'Format file banner tidak diizinkan.'], 422);
+            }
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $ext;
+            $path = $file->storeAs('banners', $filename, 'public');
+            
             $banner = Banner::create([
                 'gambar' => url('storage/' . $path)
             ]);

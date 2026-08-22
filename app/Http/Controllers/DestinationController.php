@@ -15,9 +15,9 @@ class DestinationController extends Controller
     private function fileValidationRules(): array
     {
         return [
-            'gambar'        => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+            'gambar'        => request()->hasFile('gambar') ? 'nullable|file|max:5120' : 'nullable|string',
             'galeri_files'  => 'nullable|array|max:20',
-            'galeri_files.*'=> 'image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+            'galeri_files.*'=> 'file|max:5120',
         ];
     }
 
@@ -62,15 +62,28 @@ class DestinationController extends Controller
             }
         }
 
+        $allowedExt = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+
         if ($request->hasFile('gambar')) {
-            $path = $request->file('gambar')->store('destinations', 'public');
+            $file = $request->file('gambar');
+            $ext = strtolower($file->getClientOriginalExtension());
+            if (!in_array($ext, $allowedExt)) {
+                return response()->json(['message' => 'Format file gambar utama tidak diizinkan.'], 422);
+            }
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $ext;
+            $path = $file->storeAs('destinations', $filename, 'public');
             $validated['gambar'] = url('storage/' . $path);
         }
 
         $galeri = $validated['galeri'] ?? [];
         if ($request->hasFile('galeri_files')) {
             foreach ($request->file('galeri_files') as $file) {
-                $path = $file->store('destinations/galeri', 'public');
+                $ext = strtolower($file->getClientOriginalExtension());
+                if (!in_array($ext, $allowedExt)) {
+                    return response()->json(['message' => 'Format file galeri tidak diizinkan.'], 422);
+                }
+                $filename = \Illuminate\Support\Str::random(40) . '.' . $ext;
+                $path = $file->storeAs('destinations/galeri', $filename, 'public');
                 $galeri[] = url('storage/' . $path);
             }
         }
@@ -115,15 +128,28 @@ class DestinationController extends Controller
             }
         }
 
+        $allowedExt = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+
         if ($request->hasFile('gambar')) {
-            $path = $request->file('gambar')->store('destinations', 'public');
+            $file = $request->file('gambar');
+            $ext = strtolower($file->getClientOriginalExtension());
+            if (!in_array($ext, $allowedExt)) {
+                return response()->json(['message' => 'Format file gambar utama tidak diizinkan.'], 422);
+            }
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $ext;
+            $path = $file->storeAs('destinations', $filename, 'public');
             $validated['gambar'] = url('storage/' . $path);
         }
 
         $galeri = $validated['galeri'] ?? [];
         if ($request->hasFile('galeri_files')) {
             foreach ($request->file('galeri_files') as $file) {
-                $path = $file->store('destinations/galeri', 'public');
+                $ext = strtolower($file->getClientOriginalExtension());
+                if (!in_array($ext, $allowedExt)) {
+                    return response()->json(['message' => 'Format file galeri tidak diizinkan.'], 422);
+                }
+                $filename = \Illuminate\Support\Str::random(40) . '.' . $ext;
+                $path = $file->storeAs('destinations/galeri', $filename, 'public');
                 $galeri[] = url('storage/' . $path);
             }
         }

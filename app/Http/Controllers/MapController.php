@@ -16,7 +16,7 @@ class MapController extends Controller
     private function fileRules(): array
     {
         return [
-            'gambar' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+            'gambar' => 'required|file|max:5120',
         ];
     }
 
@@ -29,8 +29,14 @@ class MapController extends Controller
     {
         $request->validate([
             'nama'   => 'required|string|max:255',
-            'gambar' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+            'gambar' => 'required|file|max:5120',
         ]);
+
+        $file = $request->file('gambar');
+        $ext = strtolower($file->getClientOriginalExtension());
+        if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
+            return response()->json(['message' => 'Format file peta tidak diizinkan.'], 422);
+        }
 
         $dusun_id = Str::slug($request->nama);
 
@@ -40,7 +46,8 @@ class MapController extends Controller
             $dusun_id = "{$dusun_id}-{$count}";
         }
 
-        $path = $request->file('gambar')->store('maps', 'public');
+        $filename = \Illuminate\Support\Str::random(40) . '.' . $ext;
+        $path = $file->storeAs('maps', $filename, 'public');
 
         $map = DusunMap::create([
             'dusun_id' => $dusun_id,
@@ -58,7 +65,7 @@ class MapController extends Controller
         // VULN-08 Fix: update() method previously had NO validation at all
         $request->validate([
             'nama'   => 'nullable|string|max:255',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+            'gambar' => request()->hasFile('gambar') ? 'nullable|file|max:5120' : 'nullable|string',
         ]);
 
         if ($request->has('nama') && !empty($request->nama)) {
@@ -67,12 +74,19 @@ class MapController extends Controller
         }
 
         if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $ext = strtolower($file->getClientOriginalExtension());
+            if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
+                return response()->json(['message' => 'Format file peta tidak diizinkan.'], 422);
+            }
+
             // Delete old file from storage
             if ($map->gambar) {
                 $oldPath = str_replace(url('storage/'), '', $map->gambar);
                 Storage::disk('public')->delete($oldPath);
             }
-            $path       = $request->file('gambar')->store('maps', 'public');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $ext;
+            $path = $file->storeAs('maps', $filename, 'public');
             $map->gambar = url('storage/' . $path);
         }
 

@@ -19,13 +19,13 @@ class MapSeeder extends Seeder
                 'gambar' => '/peta/semua.png', 
             ],
             [
-                'dusun_id' => 'babakan',
-                'nama' => 'Dusun Babakan',
+                'dusun_id' => 'babaan', // Disesuaikan dari babakan
+                'nama' => 'Dusun Babaan', // Disesuaikan dari Dusun Babakan
                 'gambar' => '/peta/dusun babakan.png', 
             ],
             [
-                'dusun_id' => 'curahkembang',
-                'nama' => 'Dusun Curahkembang',
+                'dusun_id' => 'curah_kembang', // Disesuaikan dari curahkembang
+                'nama' => 'Dusun Curah Kembang', // Disesuaikan (diberi spasi)
                 'gambar' => '/peta/dusun curahkembang.png',
             ],
             [
@@ -44,8 +44,8 @@ class MapSeeder extends Seeder
                 'gambar' => '/peta/dusun mojosari.png',
             ],
             [
-                'dusun_id' => 'ngenep',
-                'nama' => 'Dusun Ngenep',
+                'dusun_id' => 'ngenep_krajan', // Disesuaikan dari ngenep
+                'nama' => 'Dusun Ngenep Krajan', // Disesuaikan dari Dusun Ngenep
                 'gambar' => '/peta/dusun ngenep.png',
             ],
             [
