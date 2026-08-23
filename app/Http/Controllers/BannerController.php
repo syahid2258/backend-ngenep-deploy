@@ -16,7 +16,7 @@ class BannerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'gambar' => 'required|file|max:5120' // multiple files can be uploaded one by one
+            'gambar' => $request->hasFile('gambar') ? 'required|file|max:5120' : 'required|string'
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -34,7 +34,16 @@ class BannerController extends Controller
             return response()->json($banner, 201);
         }
 
-        return response()->json(['message' => 'No file uploaded'], 400);
+        // If it's a URL string
+        $url = $request->input('gambar');
+        if (!preg_match('/^https?:\/\/.+/i', $url)) {
+            return response()->json(['message' => 'URL gambar tidak valid.'], 422);
+        }
+
+        $banner = Banner::create([
+            'gambar' => $url
+        ]);
+        return response()->json($banner, 201);
     }
 
     public function destroy(string $id)
