@@ -20,6 +20,7 @@ Route::get('/banners', [\App\Http\Controllers\BannerController::class, 'index'])
 Route::get('/maps', [\App\Http\Controllers\MapController::class, 'index']);
 
 Route::get('/settings/public', [\App\Http\Controllers\SettingController::class, 'publicIndex']);
+Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -43,4 +44,8 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/settings', [\App\Http\Controllers\SettingController::class, 'index']);
     Route::post('/settings', [\App\Http\Controllers\SettingController::class, 'update']);
+
+    Route::post('/notifications', [\App\Http\Controllers\NotificationController::class, 'store']);
+    Route::put('/notifications/{id}', [\App\Http\Controllers\NotificationController::class, 'update']);
+    Route::delete('/notifications/{id}', [\App\Http\Controllers\NotificationController::class, 'destroy']);
 });
