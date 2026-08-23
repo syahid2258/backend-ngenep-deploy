@@ -22,6 +22,8 @@ Route::get('/maps', [\App\Http\Controllers\MapController::class, 'index']);
 Route::get('/settings/public', [\App\Http\Controllers\SettingController::class, 'publicIndex']);
 Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index']);
 
+Route::get('/kategori-potensi', [\App\Http\Controllers\KategoriPotensiController::class, 'index']);
+
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -48,4 +50,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notifications', [\App\Http\Controllers\NotificationController::class, 'store']);
     Route::put('/notifications/{id}', [\App\Http\Controllers\NotificationController::class, 'update']);
     Route::delete('/notifications/{id}', [\App\Http\Controllers\NotificationController::class, 'destroy']);
+
+    Route::post('/kategori-potensi', [\App\Http\Controllers\KategoriPotensiController::class, 'store']);
+    Route::put('/kategori-potensi/{id}', [\App\Http\Controllers\KategoriPotensiController::class, 'update']);
+    Route::delete('/kategori-potensi/{id}', [\App\Http\Controllers\KategoriPotensiController::class, 'destroy']);
 });

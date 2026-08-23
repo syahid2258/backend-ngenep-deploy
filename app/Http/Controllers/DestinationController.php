@@ -38,7 +38,7 @@ class DestinationController extends Controller
     public function store(Request $request)
     {
         $baseRules = [
-            'kategori'         => 'required|string|max:100|in:Wisata,Kuliner,UMKM',
+            'kategori'         => 'required|string|max:100',
             'nama'             => 'required|string|max:255',
             'dusun'            => 'required|string|max:100',
             'deskripsi'        => 'nullable|string|max:1000',
@@ -104,7 +104,7 @@ class DestinationController extends Controller
         $destination = Destination::findOrFail($id);
 
         $baseRules = [
-            'kategori'         => 'required|string|max:100|in:Wisata,Kuliner,UMKM',
+            'kategori'         => 'required|string|max:100',
             'nama'             => 'required|string|max:255',
             'dusun'            => 'required|string|max:100',
             'deskripsi'        => 'nullable|string|max:1000',
